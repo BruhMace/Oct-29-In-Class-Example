@@ -6,10 +6,19 @@
 /* global nn, Tone, viz */
 
 //sources
-const filePath = 'https://tonejs.github.io/audio/drum-samples/R8/hihat.mp3'
-const player = new Tone.Player(filePath).toDestination()
+const path = 'https://tonejs.github.io/audio/drum-samples/Kit8/'
+const drumset = new Tone.Players({
+  kick: path + 'kick.mp3',
+  snare: path + 'snare.mp3',
+  hihat: path + 'hihat.mp3',
+  tom1: path + 'tom1.mp3',
+  tom2: path + 'tom2.mp3',
+  tom3: path + 'tom3.mp3'
+})
+
+drumset.toDestination()
 //musical settings
-  
+let step = 0
 Tone.Transport.bpm.value = 120
   
 //funtions
@@ -24,19 +33,33 @@ function toggle() {
   }
 }
   
-  
 function updateBPM() {
   Tone.Transport.bpm.value = this.value
 }
 
-function play() {
-  player.start()
+function play(time) {
+  const beat = step % 4 
+  
+  if (beat === 0) drumset.player('kick').start(time)
+  
+  const chance = nn.random()
+  if (beat === 2 && chance < 0.75) {
+    drumset.player('snare').start(time)
+  } else if (beat === 0 && chance < 0.25){
+     drumset.player('snare').start(time)
+  } else if (chance < 0.5) {
+    drumset.player('snare').start(time)
+  }
+
+  
+  drumset.player('hihat').start(time)
+  
+  step++ 
 }
   
 new Tone.Loop(play).start()
 
 
-  
 //UI
   
 nn.create('button')
