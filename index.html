@@ -1,0 +1,53 @@
+<body style="background: white"></body>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js"></script>
+<script src="https://unpkg.com/tone"></script>
+<script src="https://algorithmicmusic.online/js/viz-helpers.js"></script>
+<script>
+/* global nn, Tone, viz */
+
+//sources
+const filePath = 'https://tonejs.github.io/audio/drum-samples/R8/hihat.mp3'
+const player = new Tone.Player(filePath).toDestination()
+//musical settings
+  
+Tone.Transport.bpm.value = 120
+  
+//funtions
+
+function toggle() {
+  if (Tone.Transport.state === 'stopped') {
+    Tone.Transport.start()
+    this.content('stop')
+  } else {
+    Tone.Transport.stop()
+    this.content('start')
+  }
+}
+  
+  
+function updateBPM() {
+  Tone.Transport.bpm.value = this.value
+}
+
+function play() {
+  player.start()
+}
+  
+new Tone.Loop(play).start()
+
+
+  
+//UI
+  
+nn.create('button')
+  .content('start')
+  .addTo('body')
+  .on('click',toggle)
+  
+nn.create('input')
+  .set('type', 'number')
+  .set('value', Tone.Transport.bpm.value)
+  .addTo('body')
+  .on('change',updateBPM)
+
+</script>
